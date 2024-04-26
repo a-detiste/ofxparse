@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from ofxparse import OfxParser
 import pandas as pd
 
@@ -49,7 +51,7 @@ for fname in args.files:
         df['id'] = df['id'].str[:args.id_length]  # clip the last part of the ID which changes from download to download
         data[account.number] = df
 
-print "Writing result to", args.output
+print("Writing result to", args.output)
 writer = pd.ExcelWriter(args.output)
 
 for account_number, df in data.iteritems():

@@ -65,7 +65,7 @@ class TestOfxFile(TestCase):
         self.assertEqual(ofx.account.number, '1234123412341234')
 
     def testUTF8(self):
-        fh = six.BytesIO(six.b("""OFXHEADER:100
+        fh = six.BytesIO(b"""OFXHEADER:100
 DATA:OFXSGML
 VERSION:102
 SECURITY:NONE
@@ -74,7 +74,7 @@ COMPRESSION:NONE
 OLDFILEUID:NONE
 NEWFILEUID:NONE
 
-"""))
+""")
         ofx_file = self.OfxFileCls(fh)
         headers = ofx_file.headers
         data = ofx_file.fh.read()
@@ -83,7 +83,7 @@ NEWFILEUID:NONE
         self.assertHeadersTypes(headers)
 
     def testCP1252(self):
-        fh = six.BytesIO(six.b("""OFXHEADER:100
+        fh = six.BytesIO(b"""OFXHEADER:100
 DATA:OFXSGML
 VERSION:102
 SECURITY:NONE
@@ -92,7 +92,7 @@ CHARSET: 1252
 COMPRESSION:NONE
 OLDFILEUID:NONE
 NEWFILEUID:NONE
-"""))
+""")
         ofx_file = self.OfxFileCls(fh)
         headers = ofx_file.headers
         result = ofx_file.fh.read()
@@ -101,7 +101,7 @@ NEWFILEUID:NONE
         self.assertHeadersTypes(headers)
 
     def testUTF8Japanese(self):
-        fh = six.BytesIO(six.b("""OFXHEADER:100
+        fh = six.BytesIO(b"""OFXHEADER:100
 DATA:OFXSGML
 VERSION:102
 SECURITY:NONE
@@ -110,7 +110,7 @@ CHARSET:CSUNICODE
 COMPRESSION:NONE
 OLDFILEUID:NONE
 NEWFILEUID:NONE
-"""))
+""")
         ofx_file = self.OfxFileCls(fh)
         headers = ofx_file.headers
         result = ofx_file.fh.read()
@@ -119,7 +119,7 @@ NEWFILEUID:NONE
         self.assertHeadersTypes(headers)
 
     def testBrokenLineEndings(self):
-        fh = six.BytesIO(six.b("OFXHEADER:100\rDATA:OFXSGML\r"))
+        fh = six.BytesIO(b"OFXHEADER:100\rDATA:OFXSGML\r")
         ofx_file = self.OfxFileCls(fh)
         self.assertEqual(len(ofx_file.headers.keys()), 2)
 
@@ -128,7 +128,7 @@ class TestOfxPreprocessedFile(TestOfxFile):
     OfxFileCls = OfxPreprocessedFile
 
     def testPreprocess(self):
-        fh = six.BytesIO(six.b("""OFXHEADER:100
+        fh = six.BytesIO(b"""OFXHEADER:100
 DATA:OFXSGML
 VERSION:102
 SECURITY:NONE
@@ -139,7 +139,7 @@ OLDFILEUID:NONE
 NEWFILEUID:NONE
 
 <OFX><DTASOF><![CDATA[></tricky]]><LEAVE ALONE><VAL.UE>a<VAL_UE>b<TE_ST></TE_ST><TE.ST></TE.ST><INVBAL><BALLIST><BAL><NAME>Net<DTASOF>2222</BAL><BAL><NAME>Gross<DTASOF>3333</BAL></BALLIST></INVBAL></OFX>
-"""))
+""")
         expect = """OFXHEADER:100
 DATA:OFXSGML
 VERSION:102
@@ -159,7 +159,7 @@ NEWFILEUID:NONE
 
 class TestParse(TestCase):
     def testEmptyFile(self):
-        fh = six.BytesIO(six.b(""))
+        fh = six.BytesIO(b"")
         self.assertRaises(OfxParserException, OfxParser.parse, fh)
 
     def testThatParseWorksWithoutErrors(self):
